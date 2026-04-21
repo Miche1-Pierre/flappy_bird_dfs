@@ -1,6 +1,7 @@
 package flappy.models;
 
 import flappy.Principal;
+import flappy.utils.Utils;
 
 import java.awt.*;
 
@@ -17,7 +18,7 @@ public class Tuyau extends Sprite{
 
         if(x < -largeur) {
             x = Principal.LARGEUR;
-            y = aleatoire(marge + ecartement, Principal.HAUTEUR - marge);
+            y = Utils.aleatoire(marge + ecartement, Principal.HAUTEUR - marge);
         }
     }
 
@@ -51,9 +52,4 @@ public class Tuyau extends Sprite{
         }
         return false;
     }
-
-    public int aleatoire(int min, int max){
-        return (int)(Math.random() * (max - min) + min);
-    }
-
 }

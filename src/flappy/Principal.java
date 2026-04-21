@@ -1,7 +1,9 @@
 package flappy;
 
+import flappy.models.Nuage;
 import flappy.models.Oiseau;
 import flappy.models.Tuyau;
+import flappy.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
@@ -16,6 +18,7 @@ public class Principal extends Canvas implements KeyListener {
     private JFrame fenetre = new JFrame();
     private Oiseau oiseau;
     private Tuyau tuyau;
+    private Nuage[] nuages = new Nuage[10];
 
     private boolean pause = false;
     private int score = 0;
@@ -49,6 +52,10 @@ public class Principal extends Canvas implements KeyListener {
 
         this.createBufferStrategy(2);
 
+        for(int i = 0 ; i < nuages.length ; i++) {
+            nuages[i] = new Nuage();
+        }
+
         demarrer();
     }
 
@@ -65,39 +72,55 @@ public class Principal extends Canvas implements KeyListener {
         tuyau.setY(300);
 
         score = 0;
+
+        for(Nuage nuage : nuages) {
+            nuage.setX(Utils.aleatoire(0, LARGEUR));
+            nuage.setY(Utils.aleatoire(0, HAUTEUR - 200));
+            nuage.setLargeur(Utils.aleatoire(30,200));
+        }
     }
 
     public void demarrer() throws InterruptedException {
 
         reset();
 
-        while(!pause) {
+        while(true) {
 
-            score ++;
+            if(!pause) {
 
-            Graphics2D dessin = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
+                score++;
 
-            dessin.setColor(Color.white);
-            dessin.fillRect(0,0, LARGEUR, HAUTEUR);
+                Graphics2D dessin = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
 
-            oiseau.deplacement();
-            oiseau.dessiner(dessin);
+                dessin.setColor(Color.CYAN);
+                dessin.fillRect(0, 0, LARGEUR, HAUTEUR);
 
-            tuyau.deplacement();
-            tuyau.dessiner(dessin);
+                for(Nuage nuage : nuages) {
+                    nuage.deplacement();
+                    nuage.dessiner(dessin);
+                }
 
-            if(tuyau.testCollision(oiseau) || oiseau.getY() > HAUTEUR - 50) {
-                pause = true;
+                oiseau.deplacement();
+                oiseau.dessiner(dessin);
+
+                tuyau.deplacement();
+                tuyau.dessiner(dessin);
+
+                if (tuyau.testCollision(oiseau) || oiseau.getY() > HAUTEUR - 50) {
+                    pause = true;
+
+                }
+
+                dessin.setColor(Color.BLACK);
+                dessin.setFont(new Font("Arial", Font.BOLD, 20));
+                dessin.drawString("score " + score, LARGEUR - 200, 20);
+
+                //enregistrement du dessin
+                dessin.dispose();
+                //on switch du buffer d'affichage au buffer de preparation
+                this.getBufferStrategy().show();
+
             }
-
-            dessin.setColor(Color.BLACK);
-            dessin.setFont(new Font("Arial", Font.BOLD, 20));
-            dessin.drawString("score " + score, LARGEUR - 200 ,20);
-
-            //enregistrement du dessin
-            dessin.dispose();
-            //on switch du buffer d'affichage au buffer de preparation
-            this.getBufferStrategy().show();
 
             Thread.sleep(1000 / 60);
         }
@@ -122,8 +145,6 @@ public class Principal extends Canvas implements KeyListener {
     @Override
     public void keyReleased(KeyEvent e) {
         if(e.getKeyCode() == KeyEvent.VK_SPACE) {
-
-            System.out.println("toto");
 
             if(pause) {
                 reset();

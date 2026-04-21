@@ -1,9 +1,16 @@
 package flappy.models;
 
-public class Sprite {
+import java.awt.*;
+
+public abstract class Sprite {
 
     protected int x;
     protected int y;
+
+    public abstract void dessiner(Graphics2D dessin);
+
+    public abstract void deplacement();
+
 
     public int getX() {
         return x;
