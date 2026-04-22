@@ -23,6 +23,8 @@ public class Tuyau extends Sprite{
         if(x < -largeur) {
             x = Principal.LARGEUR;
             y = Utils.aleatoire(marge + ecartement, Principal.HAUTEUR - marge);
+            vies = 3;
+            couleur = Color.GREEN;
         }
     }
 
@@ -52,6 +54,10 @@ public class Tuyau extends Sprite{
 
     public void recevoirImpact() {
         vies--;
+        switch (vies) {
+            case 2 -> couleur = Color.ORANGE;
+            case 1 -> couleur = Color.RED;
+        }
     }
 
     public boolean estDetruit() {

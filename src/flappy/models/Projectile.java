@@ -1,6 +1,7 @@
 package flappy.models;
 
 import flappy.Principal;
+import flappy.utils.Utils;
 
 import java.awt.*;
 
