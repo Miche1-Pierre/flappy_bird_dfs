@@ -7,12 +7,16 @@ import java.awt.*;
 public class Nuage extends Sprite {
 
     protected int largeur;
-    protected int vitesse = 2;
+
+    public Nuage(){
+        this.vitesse = 2;
+        this.couleur = Color.WHITE;
+    }
 
     @Override
     public void dessiner(Graphics2D dessin) {
-       dessin.setColor(Color.WHITE);
-       dessin.fillOval(x, y , largeur , largeur / 2);
+       dessin.setColor(couleur);
+       dessin.fillOval(x, y, largeur, largeur / 2);
     }
 
     @Override
@@ -24,19 +28,13 @@ public class Nuage extends Sprite {
         }
     }
 
+
+    // GETTER & SETTER
     public int getLargeur() {
         return largeur;
     }
 
     public void setLargeur(int largeur) {
         this.largeur = largeur;
-    }
-
-    public int getVitesse() {
-        return vitesse;
-    }
-
-    public void setVitesse(int vitesse) {
-        this.vitesse = vitesse;
     }
 }
