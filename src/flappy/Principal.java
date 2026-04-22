@@ -30,6 +30,8 @@ public class Principal extends Canvas implements KeyListener, MouseListener {
     private ArrayList<Projectile> listeProjectile = new ArrayList<>();
     private long dernierTir = 0;
 
+    private ArrayList<TexteFlottant> texteFlottants = new ArrayList<>();
+
     public Principal() throws InterruptedException {
 
         fenetre.setSize(LARGEUR, HAUTEUR);
@@ -147,8 +149,19 @@ public class Principal extends Canvas implements KeyListener, MouseListener {
                     if(oiseau.testCollision(bonus)) {
                         score+=100;
                         bonusTouche.add(bonus);
+                        texteFlottants.add(new TexteFlottant(bonus.getX(), bonus.getY(), "+100"));
                     }
                 }
+
+                //---- text flottants ----
+                ArrayList<TexteFlottant> texteExpires = new ArrayList<>();
+
+                for (TexteFlottant tf : texteFlottants) {
+                    tf.dessiner(dessin);
+                    if (tf.estExpire()) texteExpires.add(tf);
+                }
+
+                texteFlottants.removeAll(texteExpires);
 
                 //on supprime tous les bonus touche
                 for(Bonus bonus : bonusTouche) {
