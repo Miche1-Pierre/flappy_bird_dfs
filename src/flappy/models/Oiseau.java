@@ -12,11 +12,20 @@ public class Oiseau extends Sprite{
     public Oiseau() {
         largeur = 50;
         this.couleur = Color.RED;
+        this.vitesse = 5;
     }
 
     public void deplacement(){
         this.y += gravite;
         this.gravite += 0.2;
+    }
+
+    public void deplacerDroite() {
+        this.x += vitesse;
+    }
+
+    public void deplacerGauche() {
+        this.x -= vitesse;
     }
 
     public void dessiner(Graphics2D dessin){

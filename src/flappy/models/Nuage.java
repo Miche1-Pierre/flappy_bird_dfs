@@ -6,8 +6,6 @@ import java.awt.*;
 
 public class Nuage extends Sprite {
 
-    protected int largeur;
-
     public Nuage(){
         this.vitesse = 2;
         this.couleur = Color.WHITE;

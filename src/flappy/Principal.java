@@ -27,8 +27,9 @@ public class Principal extends Canvas implements KeyListener {
     private int score = 0;
     private int iteration = 0;
 
-    public Principal() throws InterruptedException {
+    private java.util.Set<Integer> touchesActives = new java.util.HashSet<>();
 
+    public Principal() throws InterruptedException {
 
         fenetre.setSize(LARGEUR, HAUTEUR);
 
@@ -37,7 +38,6 @@ public class Principal extends Canvas implements KeyListener {
 
         //addEventListener("click", () => console.log("coucou") )
         fenetre.addKeyListener(this);
-
 
         JPanel panel = new JPanel();
         panel.add(this);
@@ -137,12 +137,12 @@ public class Principal extends Canvas implements KeyListener {
                 }
 
                 //---- oiseau ----
-
+                if (touchesActives.contains(KeyEvent.VK_Q)) oiseau.deplacerGauche();
+                if (touchesActives.contains(KeyEvent.VK_D)) oiseau.deplacerDroite();
                 oiseau.deplacement();
                 oiseau.dessiner(dessin);
 
                 //---- tuyau ----
-
                 tuyau.deplacement();
                 tuyau.dessiner(dessin);
 
@@ -151,7 +151,6 @@ public class Principal extends Canvas implements KeyListener {
                 }
 
                 //---- UI ----
-
                 dessin.setColor(Color.BLACK);
                 dessin.setFont(new Font("Arial", Font.BOLD, 20));
                 dessin.drawString("score " + score, LARGEUR - 200, 20);
@@ -181,13 +180,18 @@ public class Principal extends Canvas implements KeyListener {
 
     @Override
     public void keyPressed(KeyEvent e) {
+        touchesActives.add(e.getKeyCode());
 
+        if (e.getKeyCode() == KeyEvent.VK_SPACE) {
+            oiseau.saut();
+        }
     }
 
     @Override
     public void keyReleased(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+        touchesActives.remove(e.getKeyCode());
 
+        if(e.getKeyCode() == KeyEvent.VK_SPACE) {
             if(pause) {
                 reset();
             } else {
