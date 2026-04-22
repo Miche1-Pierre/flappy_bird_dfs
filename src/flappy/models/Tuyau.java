@@ -9,6 +9,7 @@ public class Tuyau extends Sprite{
 
     protected int ecartement = 200;
     protected int marge = 50;
+    private int vies = 3;
 
     public Tuyau(){
         largeur = 100;
@@ -47,5 +48,30 @@ public class Tuyau extends Sprite{
                 new Point(x+ largeur, y - ecartement));
 
         return new Zone[]{zoneTuyauBas, zoneTuyauHaut};
+    }
+
+    public void recevoirImpact() {
+        vies--;
+    }
+
+    public boolean estDetruit() {
+        return vies <= 0;
+    }
+
+    // GETTER & SETTER
+    public int getEcartement() {
+        return ecartement;
+    }
+
+    public void setEcartement(int ecartement) {
+        this.ecartement = ecartement;
+    }
+
+    public int getMarge() {
+        return marge;
+    }
+
+    public void setMarge(int marge) {
+        this.marge = marge;
     }
 }

@@ -1,18 +1,17 @@
 package flappy;
 
-import flappy.models.Bonus;
-import flappy.models.Nuage;
-import flappy.models.Oiseau;
-import flappy.models.Tuyau;
+import flappy.models.*;
 import flappy.utils.Utils;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
-public class Principal extends Canvas implements KeyListener {
+public class Principal extends Canvas implements KeyListener, MouseListener {
 
     public static final int LARGEUR = 800;
     public static final int HAUTEUR = 600;
@@ -28,6 +27,8 @@ public class Principal extends Canvas implements KeyListener {
     private int iteration = 0;
 
     private java.util.Set<Integer> touchesActives = new java.util.HashSet<>();
+    private ArrayList<Projectile> listeProjectile = new ArrayList<>();
+    private long dernierTir = 0;
 
     public Principal() throws InterruptedException {
 
@@ -38,6 +39,7 @@ public class Principal extends Canvas implements KeyListener {
 
         //addEventListener("click", () => console.log("coucou") )
         fenetre.addKeyListener(this);
+        this.addMouseListener(this);
 
         JPanel panel = new JPanel();
         panel.add(this);
@@ -99,18 +101,35 @@ public class Principal extends Canvas implements KeyListener {
                 Graphics2D dessin = (Graphics2D) this.getBufferStrategy().getDrawGraphics();
 
                 //---- fond ----
-
                 dessin.setColor(Color.CYAN);
                 dessin.fillRect(0, 0, LARGEUR, HAUTEUR);
 
                 //---- nuages ----
-
                 for(Nuage nuage : nuages) {
                     nuage.deplacement();
                     nuage.dessiner(dessin);
                 }
 
                 //---- bonus ----
+
+                //---- projectiles ----
+                ArrayList<Projectile> projectilesHors = new ArrayList<>();
+
+                for (Projectile p : listeProjectile) {
+                    p.deplacement();
+                    p.dessiner(dessin);
+
+                    if (tuyau.testCollision(p)) {
+                        tuyau.recevoirImpact();
+                        projectilesHors.add(p);
+                    }
+
+                    if (p.estHorsEcran()) {
+                        projectilesHors.add(p);
+                    }
+                }
+
+                listeProjectile.removeAll(projectilesHors);
 
                 //on fait apparaitre un bonus toutes les 2 secondes
                 if(iteration % 120 == 0) {
@@ -150,6 +169,13 @@ public class Principal extends Canvas implements KeyListener {
                     pause = true;
                 }
 
+                if (tuyau.estDetruit()) {
+                    tuyau = new Tuyau();
+                    tuyau.setX(LARGEUR);
+                    tuyau.setY(Utils.aleatoire(tuyau.getMarge() + tuyau.getEcartement(), HAUTEUR - tuyau.getMarge()));
+                    score += 50; // Petit bonus
+                }
+
                 //---- UI ----
                 dessin.setColor(Color.BLACK);
                 dessin.setFont(new Font("Arial", Font.BOLD, 20));
@@ -173,6 +199,7 @@ public class Principal extends Canvas implements KeyListener {
 
     }
 
+    // KEY ACTIONS
     @Override
     public void keyTyped(KeyEvent e) {
 
@@ -199,4 +226,30 @@ public class Principal extends Canvas implements KeyListener {
             }
         }
     }
+
+    // MOUSE ACTIONS
+    @Override
+    public void mousePressed(MouseEvent e) {
+        long maintenant = System.currentTimeMillis();
+
+        if (maintenant - dernierTir >= 500) {
+            dernierTir = maintenant;
+
+            listeProjectile.add(new Projectile(
+                    oiseau.getX() + oiseau.getLargeur(), oiseau.getY() + oiseau.getLargeur() / 2
+            ));
+        }
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {}
+
+    @Override
+    public void mouseReleased(MouseEvent e) {}
+
+    @Override
+    public void mouseEntered(MouseEvent e) {}
+
+    @Override
+    public void mouseExited(MouseEvent e) {}
 }
